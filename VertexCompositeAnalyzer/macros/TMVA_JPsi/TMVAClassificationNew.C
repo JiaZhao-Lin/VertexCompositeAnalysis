@@ -164,7 +164,7 @@ int TMVAClassificationNew( TString myMethodList = "" )
    // --- Here the preparation phase begins
 
    // Create a ROOT output file where TMVA will store ntuples, histograms, etc.
-   TString outfileName( "/export/d00/scratch/davidlw/TMVA_BDT_PromptJPsi_pPb_default2_jpsi.root" );
+   TString outfileName( "/output/resultTMVA.root" );
    TFile* outputFile = TFile::Open( outfileName, "RECREATE" );
 
    // Create the factory object. Later you can choose the methods
@@ -190,39 +190,19 @@ int TMVAClassificationNew( TString myMethodList = "" )
    // [all types of expressions that can also be parsed by TTree::Draw( "expression" )]
 
     factory->AddVariable( "pT", 'F' ); 
-    factory->AddVariable( "y", 'F' );        
+    factory->AddVariable( "eta", 'F' );        
 
-//    factory->AddVariable( "flavor", 'F' );
-    factory->AddVariable( "VtxProb", 'F' );
-    factory->AddVariable( "3DDecayLengthSignificance", 'F' );
-    factory->AddVariable( "2DDecayLengthSignificance", 'F' );
-    factory->AddVariable( "3DDecayLength", 'F' );
-//    factory->AddVariable( "3DPointingAngle", 'F' );
-//    factory->AddVariable( "2DPointingAngle", 'F' );
-    factory->AddVariable( "zDCASignificanceDaugther1", 'F' );
-    factory->AddVariable( "zDCASignificanceDaugther2", 'F' );
-    factory->AddVariable( "xyDCASignificanceDaugther1", 'F' );
-    factory->AddVariable( "xyDCASignificanceDaugther2", 'F' );
-    factory->AddVariable( "NHitD1", 'F' );
-    factory->AddVariable( "NHitD2", 'F' );
-    factory->AddVariable( "nMatchedChamberD1", 'F' );
-    factory->AddVariable( "nMatchedStationD1", 'F' );
-    factory->AddVariable( "EnergyDepositionD1", 'F' );
-    factory->AddVariable( "nMatchedChamberD2", 'F' );
-    factory->AddVariable( "nMatchedStationD2", 'F' );
-    factory->AddVariable( "EnergyDepositionD2", 'F' );
-    factory->AddVariable( "dxSig1_seg", 'F' );
-    factory->AddVariable( "dySig1_seg", 'F' );
-    factory->AddVariable( "ddxdzSig1_seg", 'F' );
-    factory->AddVariable( "ddydzSig1_seg", 'F' );
-    factory->AddVariable( "dxSig2_seg", 'F' );
-    factory->AddVariable( "dySig2_seg", 'F' );
-    factory->AddVariable( "ddxdzSig2_seg", 'F' );
-    factory->AddVariable( "ddydzSig2_seg", 'F' );
-    factory->AddVariable( "pTD1", 'F' );
-    factory->AddVariable( "pTD2", 'F' );
-    factory->AddVariable( "EtaD1", 'F' );
-    factory->AddVariable( "EtaD2", 'F' );
+    factory->AddVariable( "zDCASignificanceDaugther", 'F' );
+    factory->AddVariable( "xyDCASignificanceDaugther", 'F' );
+    factory->AddVariable( "NHit", 'F' );
+    factory->AddVariable( "nMatchedChamber", 'F' );
+    factory->AddVariable( "trkKink", 'F' );
+    factory->AddVariable( "hadEnergy", 'F' );
+    factory->AddVariable( "emEnergy", 'F' );
+    factory->AddVariable( "dxSig_seg", 'F' );
+    factory->AddVariable( "dySig_seg", 'F' );
+    factory->AddVariable( "ddxdzSig_seg", 'F' );
+    factory->AddVariable( "ddydzSig_seg", 'F' );
 
 //    factory->AddVariable( "pTD1+pTD2", 'F' );
 //    factory->AddVariable( "abs(EtaD1-EtaD2)", 'F' );
@@ -242,8 +222,8 @@ int TMVAClassificationNew( TString myMethodList = "" )
 
    // Read training and test data
    // (it is also possible to use ASCII format as input -> see TMVA Users Guide)
-   TFile *input_background = TFile::Open("training_samples/Merged_pPbData_JPsi_TrainingTree_WS_HLT185_v3.root");
-   TFile *input_signal = TFile::Open("training_samples/Merged_pPbMC_PromptJPsi_TrainingTree_signal_combined_v2.root");
+   TFile *input_background = TFile::Open("/eos/cms/store/group/phys_heavyions/anstahll/RiceHIN/pPb2016/NTuple/training_sample/MuonNtuple_PASingleMuon_PARun2016C_Muon_20200511.root");
+   TFile *input_signal = TFile::Open("/eos/cms/store/group/phys_heavyions/anstahll/RiceHIN/pPb2016/NTuple/training_sample/MuonNtuple_JPsiToMuMu_pPb-Bst_pPb816Summer16_Muon_20200511.root");
 
 //   TFile *input_signal = TFile::Open("training_samples/d0ana_mc_82.root");
 //   TFile *input_background = TFile::Open("training_samples/d0ana_training_57.root");
@@ -252,9 +232,9 @@ int TMVAClassificationNew( TString myMethodList = "" )
    std::cout << "--- TMVAClassification       : Using background input file: " << input_background->GetName() << std::endl;
    
    // --- Register the training and test trees
-   TTree *signal     = (TTree*)input_signal->Get("jpsiana_mc_genmatch/VertexCompositeNtuple");
+   TTree *signal     = (TTree*)input_signal->Get("MuonNtuple");
 //   TTree *background = (TTree*)input_background->Get("jpsiana2_wrongsign/VertexCompositeNtuple");
-   TTree *background = (TTree*)input_background->Get("VertexCompositeNtuple");
+   TTree *background = (TTree*)input_background->Get("MuonNtuple");
 
    // global event weights per tree (see below for setting event-wise weights)
    Double_t signalWeight     = 1.0;
@@ -313,7 +293,7 @@ int TMVAClassificationNew( TString myMethodList = "" )
 //   TCut mycuts = "abs(mass)<1.92 && abs(mass)>1.82"; // for example: TCut mycuts = "abs(var1)<0.5 && abs(var2-0.5)<1";
 //   TCut mycutb = "abs(mass)>1.92 || abs(mass)<1.82"; // for example: TCut mycutb = "abs(var1)<0.5";
 //TCut mycuts = "HighPurityDaugther2==1 && HighPurityDaugther1==1 && abs(3DDecayLengthSignificance)<100 && abs(2DDecayLengthSignificance)<100 && (pTD1+pTD2)>1.6 && abs(EtaD1-EtaD2)<1.0 && pTD1>0.7 && pTD2>0.7";
-     TCut mycuts = "VtxProb>0.01 && NHitD1>=6 && NHitD2>=6 && pTD1*cosh(EtaD1)>3.0 && pTD2*cosh(EtaD2)>3.0 && (pTD1*cosh(EtaD1)+pTD2*cosh(EtaD2))>8.0 && abs(3DDecayLengthSignificance)<100 && abs(2DDecayLengthSignificance)<100";
+     TCut mycuts = "evtSel0 && softMuon";
 //     TCut mycuts = "NHitD1>=11 && NHitD2>=11 && pTerrD1<0.1 && pTerrD2<0.1 && HighPurityDaugther2==1 && HighPurityDaugther1==1 && abs(3DDecayLengthSignificance)<100 && abs(2DDecayLengthSignificance)<100 && pTD1>0.7 && pTD2>0.7 && abs(EtaD1-EtaD2)<1.5";
 //     TCut mycuts = "HighPurityDaugther2==1 && HighPurityDaugther1==1 && pT>1.2 && abs(3DDecayLengthSignificance)<100 && abs(2DDecayLengthSignificance)<100";
 
@@ -321,7 +301,7 @@ int TMVAClassificationNew( TString myMethodList = "" )
    //
    // If no numbers of events are given, half of the events in the tree are used 
    // for training, and the other half for testing:
-       factory->PrepareTrainingAndTestTree( mycuts, "SplitMode=random:!V" );
+       factory->PrepareTrainingAndTestTree( mycuts, "nTrain_Signal=10000:nTrain_Background=10000:nTest_Signal=5000:nTest_Background=5000:SplitMode=random:!V" );
    // To also specify the number of testing events, use:
 //   factory->PrepareTrainingAndTestTree( mycuts, 
 //                                        "nTrain_Signal=50000,nTrain_Background=50000,nTest_Signal=50000,nTest_Background=50000,SplitMode=Random:!V");
@@ -518,27 +498,34 @@ int TMVAClassificationNew( TString myMethodList = "" )
    // ---- Now you can tell the factory to train, test, and evaluate the MVAs
 
    // Train MVAs using the set of training events
+   std::cout << "TRAINING METHOD" << std::endl;
    factory->TrainAllMethods();
 
    // ---- Evaluate all MVAs using the set of test events
+   std::cout << "TESTING METHOD" << std::endl;
    factory->TestAllMethods();
 
    // ----- Evaluate and compare performance of all configured MVAs
+   std::cout << "EVALUATE METHOD" << std::endl;
    factory->EvaluateAllMethods();
 
    // --------------------------------------------------------------
 
    // Save the output
+   std::cout << "CLOSE" << std::endl;
    outputFile->Close();
 
    std::cout << "==> Wrote root file: " << outputFile->GetName() << std::endl;
    std::cout << "==> TMVAClassification is done!" << std::endl;
 
+   std::cout << "DELETE" << std::endl;
    delete factory;
 
    // Launch the GUI for the root macros
+   std::cout << "BATCH" << std::endl;
    if (!gROOT->IsBatch()) TMVA::TMVAGui( outfileName );
 
+   std::cout << "DONE" << std::endl;
    return 0;
 }
 

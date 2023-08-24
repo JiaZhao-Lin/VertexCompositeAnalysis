@@ -14,7 +14,7 @@ process.options = cms.untracked.PSet(wantSummary = cms.untracked.bool(True))
 
 # Define the input source
 process.source = cms.Source("PoolSource",
-   fileNames = cms.untracked.vstring('file:/afs/cern.ch/user/a/anstahll/work/Analysis/GeneralAnalyzer/CMSSW_12_5_3/src/VertexCompositeAnalysis/VertexCompositeProducer/test/HIFORWARD/Run2022/804d2352-a415-4455-b5c9-fff299c5506c.root'),
+   fileNames = cms.untracked.vstring('file:/eos/cms/store/group/phys_heavyions/anstahll/CERN/Run3/2023/MC/STARLIGHT/CohJPsi_STARLIGHT_5p36TeV_2023Run3_RECO_20230812/CohJPsi_STARLIGHT_5p36TeV_2023Run3/CohJPsi_STARLIGHT_5p36TeV_2023Run3_RECO_20230812/230812_093758/0000/step3_STARlight_Reco_10.root'),
    inputCommands=cms.untracked.vstring('keep *', 'drop *_hiEvtPlane_*_*')
 )
 process.maxEvents = cms.untracked.PSet(input = cms.untracked.int32(-1))

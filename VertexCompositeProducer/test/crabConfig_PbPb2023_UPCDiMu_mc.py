@@ -10,7 +10,7 @@ config.General.transferLogs = False
 
 config.section_('JobType')
 config.JobType.pluginName = 'Analysis'
-config.JobType.psetName = 'VCTree_PbPb2023_UPCDiMu_130X_mc_cfg.py'
+config.JobType.psetName = 'VCTree_PbPb2023_UPCDiMu_mc_cfg.py'
 # config.JobType.inputFiles = ['HeavyIonRPRcd_PbPb2018_offline.db']
 #config.JobType.numCores = 1
 config.JobType.allowUndistributedCMSSW = True
@@ -30,7 +30,7 @@ config.Site.storageSite = 'T2_CH_CERN'
 #############################################################################################
 #############################################################################################
 
-request_name = "VCTree_CohJpsiToMuMu"
+request_name = "VCTree_CohJpsiToMuMu_130X"
 request_name += "_%s" % datetime.now().strftime("%y%m%d_%H%M%S")
 
 config.General.requestName = request_name

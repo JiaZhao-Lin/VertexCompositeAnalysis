@@ -10,7 +10,7 @@ config.General.transferLogs = False
 
 config.section_('JobType')
 config.JobType.pluginName = 'Analysis'
-config.JobType.psetName = 'VCTree_PbPb2023_UPCDiMu_Express_cfg.py'
+config.JobType.psetName = 'VCTree_PbPb2023_UPCDiMu_ppReco_Express_cfg.py'
 # config.JobType.inputFiles = ['HeavyIonRPRcd_PbPb2018_offline.db']
 #config.JobType.numCores = 1
 config.JobType.allowUndistributedCMSSW = True
@@ -30,9 +30,9 @@ config.Site.storageSite = 'T2_CH_CERN'
 #############################################################################################
 #############################################################################################
 
-request_name = "VCTree_t0streamer_PhysicsHIForward0_HIReco"
-# request_name = "VCTree_HIRun2023A_HIForward0_HIReco"
-run_number = "374666"
+request_name = "VCTree_t0streamer_PhysicsHIForward0_ppReco"
+# request_name = "VCTree_HIRun2023A_HIForward0_ppReco"
+run_number = "374730"
 request_name += "_Run" + run_number + "_%s" % datetime.now().strftime("%y%m%d_%H%M%S")
 
 config.General.requestName = request_name
@@ -48,7 +48,7 @@ config.Data.outLFNDirBase = '/store/group/phys_heavyions/jiazhao/Data_Run3/VCTre
 # print("Submitting CRAB job for: "+dataset)
 
 #* FileList *************************************************************
-input_filelist = "./fileList/HIForward0_HIReco_374666.txt"
+input_filelist = "./fileList/HIForward0_streamer_ppReco_374730.txt"
 config.Data.userInputFiles = open(input_filelist).readlines() 
 print("Submitting CRAB job for: "+input_filelist)
 
